@@ -18,20 +18,20 @@ def force_fresh_inference():
         return
 
     print("🧠 Loading clean instance model weights...")
-    model = YOLO(weights_path)
+    model = YOLO(weights_path)      # a main.py
     
     # Read the car image using standard OpenCV (Keeps native color space locked)
-    img = cv2.imread(image_path)
+    img = cv2.imread(image_path)    # a main.py
     
     print("📸 Testing at absolute zero threshold to force raw array detection data...")
     # conf=0.25 forces the engine to reveal any detected pixel coordinates
-    results = model.predict(source=img, conf=0.25, device="cpu")
+    results = model.predict(source=img, conf=0.25, device="cpu")    # a main.py
     boxes = results[0].boxes
     
     print(f"📊 Raw Model Coordinate Arrays found: {len(boxes)}")
     
     # If the model finds bounding boxes, we draw them ourselves natively
-    if len(boxes) > 0:
+    if len(boxes) > 0:                                                                            # a main.py con lógia invertida
         for box in boxes:
             # Extract bounding box boundaries in standard pixel coordinates (xyxy)
             x1, y1, x2, y2 = box.xyxy[0].tolist()

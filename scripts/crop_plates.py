@@ -46,7 +46,7 @@ def run_production_crop():
         
         # 3. Slicing matricial de NumPy: [Y_inicial : Y_final, X_inicial : X_final]
         # Corta la imagen exactamente dentro de los límites del rectángulo
-        cropped_plate = img[y1:y2, x1:x2]
+        cropped_plate = img[y1:y2, x1:x2]                                                     # a main.py
         
         if cropped_plate.size > 0:
             # Guardar el recorte limpio
