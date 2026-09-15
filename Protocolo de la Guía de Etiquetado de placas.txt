@@ -1,0 +1,82 @@
+📋 Protocolo de la Guía de Etiquetado: Matrículas. 
+
+Para demostrarle a un reclutador que piensas como un científico de datos riguroso, debes definir reglas estrictas que eliminen la ambigüedad para tu modelo de aprendizaje profundo (YOLO). 
+
+Al revisar las imágenes procesadas en `data/processed/`, aplica los siguientes criterios de anotación de alto estándar: 
+
+
+1. Selección del marco (Límites de la Bounding Box). 
+
+- Ajuste preciso: El borde de la caja delimitadora debe tocar perfectamente los píxeles más externos del marco de la matrícula. 
+- Sin márgenes: No incluyas bordes del parachoques o de la parrilla del coche. Los píxeles adicionales fuera de la matrícula reducen la precisión del modelo en cuanto a coordenadas. 
+- Visibilidad parcial: Si un enganche de remolque o un adorno del marco oculta una pequeña parte de la matrícula, dibuja la caja abarcando toda el área prevista de la matrícula de todos modos. 
+
+
+2. Manejo de casos límite y excepciones del sistema. 
+
+A esto se refiere la oferta de trabajo con la frase "detectar cuándo los criterios no cuadran". 
+
+Si te encuentras con estos casos, aplica las siguientes reglas operativas: 
+
+- Ángulos pronunciados o inclinación (Matrículas rotadas): Si una matrícula se ha fotografiado desde un ángulo lateral agudo, dibuja una caja rectangular estándar que abarque los puntos más altos, más bajos, más a la izquierda y más a la derecha. (Anota esto para una futura aumentación de datos). 
+- Oscuridad/Suciedad extrema: Si una matrícula es totalmente ilegible para el ojo humano debido a barro, reflejos intensos o daños físicos, no la etiquetes. Omítela o marca la imagen para su eliminación. Si un modelo intenta aprender de formas ilegibles, sus pesos se corrompen. 
+- Matrículas extranjeras o especiales: Si encuentras matrículas diplomáticas, de motocicleta o temporales de papel que se ven completamente diferentes a una matrícula estándar de coche, asígnalas a una clase separada o márcalas. Combinar formatos en una misma clase sin contar con un gran volumen de muestras reduce la precisión.
+
+
+
+🛠️ Estrategia de ejecución: Herramientas recomendadas. 
+
+Para llevar a cabo la fase [F1-P4] con tus datos, necesitamos una interfaz visual. 
+
+Los estándares actuales de la industria son: (utilicé Roboflow en web)
+
+1. Roboflow (basado en web): muy recomendado para principiantes; subes tu carpeta de datos procesados, dibujas los cuadros delimitadores (*bounding boxes*) en el navegador y exportas directamente en formato YOLOv8.
+
+2. LabelImg / CVAT (local): herramientas de escritorio si prefieres mantener todos los archivos estrictamente sin conexión en tu equipo.
+
+
+Pasos en Roboflow
+
+Step 1: Create Your Project
+1. Go to Roboflow.com and create a free account.
+2. Click on "Create New Project".
+3. Fill out the project settings exactly like this:
+	1. Project Type: Object Detection (Bounding Boxes)
+	2. What are you detecting?: license-plateProject 
+	3. Name: ALPR-Project
+
+Step 2: Upload Your Processed Images
+1. Drag and drop your entire data/processed/ folder (the images you cleaned with your Python script) into the upload area.
+2. Click "Assign Images" to assign them to yourself for labeling.
+
+Step 3: Draw the Bounding Boxes (The Labeling Process)
+This is where you apply your professional criteria:
+1. Click on the first image to open the labeling editor.
+2. Select the Rectangle tool (or press the W key on your keyboard).
+3. Draw a tight box around the license plate.
+4. Type license-plate as the label name and press Enter.
+5. Repeat this for all your images. Move to the next image using the arrow keys.
+
+Step 4: Generate and Export the Dataset
+Once you finish labeling your images:
+1. Click "Add to Dataset" on the top right.
+2. Roboflow will ask you to split your data. Choose the default split: 70% Train, 20% Valid, 10% Test. (This directly fulfills the "Medir: armar los splits" requirement from your job offer!).
+3. Click "Generate New Version". Skip any preprocessing or augmentation steps for now (click "Continue" through them) because your Python script already standardizes your images.
+4. Once generated, click "Export Dataset".
+5. CRITICAL STEP: Select YOLOv8 format and check the "download zip to computer" option.
+
+What Roboflow Outputs Behind the Scenes
+When you unzip that folder, Roboflow translates your mouse drawings into structured text files. For every image (e.g., auto_001.jpg), it creates a matching text file (auto_001.txt) containing row configurations like this:
+
+text
+0 0.45 0.52 0.25 0.12
+
+0: The class ID (0 represents license-plate).
+0.45 0.52: The exact center coordinates (X, Y) of your bounding box.
+0.25 0.12: The Width and Height of your box.
+(All numbers are normalized between 0 and 1 relative to your 640x640 canvas).
+
+This completely concludes Fase 1: Preparación del Entorno y Dataset. You are now officially ready to move to Fase 2: Detección de la Placa (YOLO).
+
+
+

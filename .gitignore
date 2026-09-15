@@ -1,0 +1,18 @@
+# Excluir entornos virtuales locales
+venv/
+.venv/
+
+# Excluir los sets de datos (Kaggle/Roboflow) e imágenes crudas
+data/raw/
+data/processed/
+data/dataset/
+
+# Excluir los pesos y logs pesados de entrenamiento de YOLO
+runs/
+*.pt
+
+# Excluir archivos temporales del sistema o cachés de Python
+__pycache__/
+.DS_Store
+*.jpg
+*.png
